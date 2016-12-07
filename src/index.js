@@ -4,17 +4,17 @@ import React from 'react'
 import { render } from 'react-dom'
 import { createStore, combineReducers } from 'redux'
 import { rootReducer } from './reducers/index'
-import { addNewTodo, toggleTodo, editTodo, removeTodo } from './actions/index'
+import { addNewTodo, toggleTodo, editTodo, removeTodo, setVisibilityFilter } from './actions/index'
+import { TodoApp } from './components/TodoApp'
 
 const store = createStore(rootReducer);
 
-console.log(store.getState());
+const renderApp = () => { 
+  render(
+    <TodoApp todos={store.getState().todos} store={store}/>,
+    document.getElementById('root')
+  )
+}
 
-store.dispatch(addNewTodo(4, 'Go to sleep'));
-console.log(store.getState());
-
-store.dispatch(toggleTodo(4));
-console.log(store.getState());
-
-store.dispatch(removeTodo(4));
-console.log(store.getState());
+store.subscribe(renderApp);
+renderApp();

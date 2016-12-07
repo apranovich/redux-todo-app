@@ -19,8 +19,14 @@ const todo = (state = {}, action) => {
       if(state.id !== payload.id){
         return state;
       }
-      return Object.assign({}, state, {completed: !payload.completed})
+      return Object.assign({}, state, {completed: !state.completed})
     }
+    case 'EDIT_TODO': {
+      if(state.id !== payload.id){
+        return state;
+      }
+      return { ...state, text: payload.text }
+    }    
     case 'REMOVE_TODO': {
       return state.id !== payload.id;
     }
@@ -37,12 +43,13 @@ export const todos = (state = initialState, action) => {
         todo(undefined, action)
       ]
     }
-    case 'TOGGLE_TODO': {
+    case 'TOGGLE_TODO':
+    case 'EDIT_TODO': {
       return state.map( (item) => todo(item, action) );
     }
     case 'REMOVE_TODO': {
       return state.filter( (item) => todo(item, action) );
-    }
+    }    
     default:
       return state;
   }
