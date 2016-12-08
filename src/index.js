@@ -11,7 +11,7 @@ const store = createStore(rootReducer);
 
 const renderApp = () => { 
   render(
-    <TodoApp todos={store.getState().todos} store={store}/>,
+    <TodoApp {...store.getState()} dispatch={store.dispatch}/>,
     document.getElementById('root')
   )
 }
