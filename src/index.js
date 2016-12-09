@@ -1,17 +1,21 @@
 import 'babel-polyfill';
 
-import React from 'react'
+import React, { Component } from 'react'
 import { render } from 'react-dom'
 import { createStore, combineReducers } from 'redux'
+import { Provider } from 'react-redux'  
+
 import { rootReducer } from './reducers/index'
 import { addNewTodo, toggleTodo, editTodo, removeTodo, setVisibilityFilter } from './actions/index'
-import { TodoApp } from './components/TodoApp'
+import TodoApp from './components/TodoApp'
 
 const store = createStore(rootReducer);
 
 const renderApp = () => { 
   render(
-    <TodoApp {...store.getState()} dispatch={store.dispatch}/>,
+    <Provider store={store}>
+      <TodoApp/>
+    </Provider>,
     document.getElementById('root')
   )
 }

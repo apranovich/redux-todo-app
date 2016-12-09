@@ -4,7 +4,7 @@ import { TodoItem } from './TodoItem'
 export const TodoList = ({ todos, onTodoClick }) => {
   return (
     <ul>
-      { todos.map((todo) => <TodoItem key={todo.id} {...todo} onTodoClick={ (id) => onTodoClick(id) } />) }
+      { todos.map((todo) => <TodoItem key={todo.id} {...todo} onTodoClick={onTodoClick} />) }
     </ul>
   )
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { setVisibilityFilter } from '../actions/index'
+import { Link } from './Link'
 
 export class FilterLink extends Component {
   constructor(props){
@@ -9,16 +10,13 @@ export class FilterLink extends Component {
 
   filterClick(e){
     e.preventDefault();
-    this.props.onClick();
+    this.props.onFilterClick(this.props.filter);
   }
 
   render(){
-    if(this.props.isSelected){
-      return <span>{this.props.children}</span>
-    }
-
-    return (
-      <a href="" onClick={this.filterClick}>{this.props.children}</a>
-    )
+    return <Link active={this.props.currentFilter === this.props.filter}
+                 onClick={this.filterClick}
+                 children={this.props.children}/>
   }
 }
+

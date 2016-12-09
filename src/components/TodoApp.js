@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { addNewTodo, toggleTodo, editTodo, removeTodo, setVisibilityFilter } from '../actions/index'
 
 import { FilterLink } from './FilterLink'
 import { TodoList } from './TodoList'
 import { AddTodo } from './AddTodo'
+import { Footer } from './Footer'
 
-export class TodoApp extends Component {
+class TodoApp extends Component {
   constructor(props){
     super(props);
-
-    this.lastUsedTodoId = this.props.todos.length ? this.props.todos[this.props.todos.length - 1].id : 0;
-    this.clickedFilter = 'SHOW_ALL';
+    this.lastUsedTodoId = this.getLastUsedIdForTodoItem();
   }
 
-  filterTodos(filter){
-    this.props.dispatch(setVisibilityFilter(filter));
+  getLastUsedIdForTodoItem(){
+    const { todos } = this.props;
+    return todos.length ? todos[todos.length - 1].id : 0
   }
 
-  visibleTodos(){
-    let todos = this.props.todos;
-    switch(this.props.visibilityFilter){
+  visibleTodos(todos, visibilityFilter){
+    switch(visibilityFilter){
       case 'SHOW_ALL': {
         return todos;
       }
@@ -33,17 +33,30 @@ export class TodoApp extends Component {
   }
 
   render(){
+    const { todos, visibilityFilter } = this.props;
     return (
       <div>
-        <AddTodo addNewTodo={ (id, text) => this.props.dispatch(addNewTodo(id, text)) } nextTodoId={++this.lastUsedTodoId}/>        
-        <TodoList todos={ this.visibleTodos() } onTodoClick={ (id) => this.props.dispatch(toggleTodo(id)) }/>
-        
-        <p>Show:{' '}
-          <FilterLink onClick={() => this.filterTodos('SHOW_ALL')} isSelected={this.props.visibilityFilter === 'SHOW_ALL'}>All</FilterLink>{' '}
-          <FilterLink onClick={() => this.filterTodos('SHOW_ACTIVE')} isSelected={this.props.visibilityFilter === 'SHOW_ACTIVE'}>Active</FilterLink>{' '}
-          <FilterLink onClick={() => this.filterTodos('SHOW_COMPLETED')} isSelected={this.props.visibilityFilter === 'SHOW_COMPLETED'}>Completed</FilterLink>
-        </p>
+        <AddTodo addNewTodo={this.props.addNewTodo} nextTodoId={++this.lastUsedTodoId}/>        
+        <TodoList todos={ this.visibleTodos(todos, visibilityFilter) } onTodoClick={this.props.toggleTodo}/>
+        <Footer onFilterClick={this.props.setFilter} currentFilter={visibilityFilter}/>
       </div>
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    todos: state.todos,
+    visibilityFilter: state.visibilityFilter
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addNewTodo: (id, text) => { dispatch(addNewTodo(id, text)) },
+    setFilter: (filter) => { dispatch(setVisibilityFilter(filter)) },
+    toggleTodo: (id) => { dispatch(toggleTodo(id)) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoApp);
