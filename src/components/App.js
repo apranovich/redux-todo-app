@@ -7,7 +7,7 @@ import { TodoList } from './TodoList'
 import { AddTodo } from './AddTodo'
 import { Footer } from './Footer'
 
-class TodoApp extends Component {
+class App extends Component {
   constructor(props){
     super(props);
     this.lastUsedTodoId = this.getLastUsedIdForTodoItem();
@@ -59,4 +59,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodoApp);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
