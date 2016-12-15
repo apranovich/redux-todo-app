@@ -1,7 +1,5 @@
 import { combineReducers } from 'redux'
-
-import { todos } from './todos'
-import { visibilityFilter } from './visibilityFilter'
+import todos, * as fromTodos from './todos'
 
 const combineReducersFromScratch = (reducers) => {
   return (state = {}, action) => {
@@ -17,6 +15,8 @@ const combineReducersFromScratch = (reducers) => {
 }
 
 export const rootReducer = combineReducers({
-  todos,
-  visibilityFilter
+  todos
 });
+
+export const getVisibleTodos = (state, filter) => 
+  fromTodos.getVisibleTodos(state.todos, filter)

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { addNewTodo, toggleTodo, editTodo, removeTodo, setVisibilityFilter } from '../actions/index'
+import { withRouter } from 'react-router'
+import { getVisibleTodos } from '../reducers/index'
 
 import { FilterLink } from './FilterLink'
 import { TodoList } from './TodoList'
@@ -18,45 +20,28 @@ class App extends Component {
     return todos.length ? todos[todos.length - 1].id : 0
   }
 
-  visibleTodos(todos, visibilityFilter){
-    switch(visibilityFilter){
-      case 'SHOW_ALL': {
-        return todos;
-      }
-      case 'SHOW_ACTIVE': {
-        return todos.filter( todo => !todo.completed );
-      }
-      case 'SHOW_COMPLETED': {
-        return todos.filter( todo => todo.completed );
-      }
-    }
-  }
-
   render(){
     const { todos, visibilityFilter } = this.props;
     return (
       <div>
         <AddTodo addNewTodo={this.props.addNewTodo} nextTodoId={++this.lastUsedTodoId}/>        
-        <TodoList todos={ this.visibleTodos(todos, visibilityFilter) } onTodoClick={this.props.toggleTodo}/>
+        <TodoList todos={todos} onTodoClick={this.props.toggleTodo}/>
         <Footer onFilterClick={this.props.setFilter} currentFilter={visibilityFilter}/>
       </div>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, {params}) => {
   return {
-    todos: state.todos,
-    visibilityFilter: state.visibilityFilter
+    todos: getVisibleTodos(state, params.filter || "all"),
+    visibilityFilter: params.filter || "all"
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addNewTodo: (id, text) => { dispatch(addNewTodo(id, text)) },
-    setFilter: (filter) => { dispatch(setVisibilityFilter(filter)) },
-    toggleTodo: (id) => { dispatch(toggleTodo(id)) }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(
+  connect(
+    mapStateToProps, 
+    { addNewTodo, setFilter: setVisibilityFilter, toggleTodo }
+  )(App)
+);
