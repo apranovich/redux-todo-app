@@ -2,8 +2,13 @@ import 'babel-polyfill';
 
 import React, { Component } from 'react'
 import { render } from 'react-dom'
-import { store } from './store/configure-store'
+import store from './store/configure-store'
 import { Root } from './components/Root'
+import { fetchTodos } from './api'
+
+fetchTodos('all').then(todos => 
+  console.log(todos)
+);
 
 render(
   <Root store={store} />, 

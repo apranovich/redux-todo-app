@@ -1,74 +1,54 @@
-const initialState = [
-  { id: 1, text: 'Buy Iphone 6+', completed: false },
-  { id: 2, text: 'Complete medical examination', completed: false },
-  { id: 3, text: 'Find new appartments to rent', completed: false }
-];
+import { combineReducers } from 'redux'
+import todo from './todo'
 
-const todo = (state = {}, action) => {
-  const { payload } = action;
-
+const byId = (state = {}, action) => {
   switch(action.type){
-    case 'ADD_NEW_TODO': {
-      return {
-        id: payload.id,
-        text: payload.text,
-        completed: false
-      }
-    }
+    case 'ADD_NEW_TODO':
     case 'TOGGLE_TODO': {
-      if(state.id !== payload.id){
-        return state;
+      const { id } = action.payload;
+      return {
+        ...state,
+        [id]: todo(state[id], action)
       }
-      return Object.assign({}, state, {completed: !state.completed})
-    }
-    case 'EDIT_TODO': {
-      if(state.id !== payload.id){
-        return state;
-      }
-      return { ...state, text: payload.text }
-    }    
-    case 'REMOVE_TODO': {
-      return state.id !== payload.id;
     }
     default:
       return state;
   }
 }
 
-const todos = (state = initialState, action) => {
+const allIds = (state = [], action) => {
   switch(action.type){
     case 'ADD_NEW_TODO': {
-      return [
-        ...state,
-        todo(undefined, action)
-      ]
+      return [...state, action.payload.id]
     }
-    case 'TOGGLE_TODO':
-    case 'EDIT_TODO': {
-      return state.map( (item) => todo(item, action) );
-    }
-    case 'REMOVE_TODO': {
-      return state.filter( (item) => todo(item, action) );
-    }    
-    default:
-      return state;
+    default: 
+      return state
   }
 }
+
+const todos = combineReducers({
+  byId, 
+  allIds
+})
 
 export default todos;
 
+const getAllTodos = (state) => 
+  state.allIds.map((id) => state.byId[id])
+
 export const getVisibleTodos = (state, filter) => {
+  const allTodos = getAllTodos(state);
   switch(filter){
     case 'all': {
-      return state;
+      return allTodos;
     }
     case 'active': {
-      return state.filter( todo => !todo.completed );
+      return allTodos.filter( todo => !todo.completed );
     }
     case 'completed': {
-      return state.filter( todo => todo.completed );
+      return allTodos.filter( todo => todo.completed );
     }
     default: 
-      return state;
+      return allTodos;
   }
 }
