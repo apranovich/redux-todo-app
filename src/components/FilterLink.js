@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { setVisibilityFilter } from '../actions/index'
 import { Link } from 'react-router'
 
 export const FilterLink = ({filter, children}) => (

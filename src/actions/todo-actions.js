@@ -8,6 +8,11 @@ const toggleTodo = (id) => ({
   payload: { id }
 })
 
+const receiveTodos = (filter, data) => ({
+  type: 'RECEIVE_TODOS',
+  payload: { filter, data }
+})
+
 const editTodo = (id, text) => ({
   type: 'EDIT_TODO',
   payload: { id, text }
@@ -19,5 +24,5 @@ const removeTodo = (id) => ({
 })
 
 export {
-  addNewTodo, toggleTodo, editTodo, removeTodo
+  addNewTodo, toggleTodo, receiveTodos, editTodo, removeTodo
 }

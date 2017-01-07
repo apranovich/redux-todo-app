@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { addNewTodo, toggleTodo, editTodo, removeTodo, setVisibilityFilter } from '../actions/index'
+import * as actions from '../actions/index'
 import { withRouter } from 'react-router'
 import { getVisibleTodos } from '../reducers/index'
 
@@ -8,40 +8,54 @@ import { FilterLink } from './FilterLink'
 import { TodoList } from './TodoList'
 import { AddTodo } from './AddTodo'
 import { Footer } from './Footer'
+import { fetchTodos } from '../api'
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.lastUsedTodoId = this.getLastUsedIdForTodoItem();
   }
 
-  getLastUsedIdForTodoItem(){
-    const { todos } = this.props;
-    return todos.length ? todos[todos.length - 1].id : 0
+  componentDidMount(){
+    const { filter } = this.props;
+    this.fetchData(filter);
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(this.props.filter !== nextProps.filter){
+      this.fetchData(nextProps.filter);
+    }
+  }
+
+  fetchData(filter){
+    fetchTodos(filter).then((todos) => {
+      console.log(todos);
+      this.props.receiveTodos(filter, todos);
+    });
   }
 
   render(){
-    const { todos, visibilityFilter } = this.props;
+    const { toggleTodo, ...rest } = this.props;
     return (
       <div>
-        <AddTodo addNewTodo={this.props.addNewTodo} nextTodoId={++this.lastUsedTodoId}/>        
-        <TodoList todos={todos} onTodoClick={this.props.toggleTodo}/>
-        <Footer onFilterClick={this.props.setFilter} currentFilter={visibilityFilter}/>
+        <AddTodo {...rest}/>        
+        <TodoList {...rest} onTodoClick={this.props.toggleTodo}/>
+        <Footer/>
       </div>
     )
   }
 }
 
 const mapStateToProps = (state, {params}) => {
+  const filter = params.filter || "all";
   return {
-    todos: getVisibleTodos(state, params.filter || "all"),
-    visibilityFilter: params.filter || "all"
+    todos: getVisibleTodos(state, filter),
+    filter
   }
 }
 
 export default withRouter(
   connect(
     mapStateToProps, 
-    { addNewTodo, setFilter: setVisibilityFilter, toggleTodo }
+    actions
   )(App)
 );
