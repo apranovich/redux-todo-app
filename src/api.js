@@ -1,8 +1,8 @@
 const fakeDatabase = {
   todos: [
     { id: 0, completed: false, text: 'First task' },
-    { id: 0, completed: true, text: 'Second task' },
-    { id: 0, completed: false, text: 'Third task' },
+    { id: 1, completed: true, text: 'Second task' },
+    { id: 2, completed: false, text: 'Third task' },
   ]
 }
 
@@ -22,4 +22,4 @@ export const fetchTodos = (filter) => {
         throw new Error(`Unknown filter: ${filter}`);
     }
   })
-} 
+}

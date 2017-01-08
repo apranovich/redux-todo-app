@@ -8,7 +8,6 @@ import { FilterLink } from './FilterLink'
 import { TodoList } from './TodoList'
 import { AddTodo } from './AddTodo'
 import { Footer } from './Footer'
-import { fetchTodos } from '../api'
 
 class App extends Component {
   constructor(props){
@@ -27,10 +26,7 @@ class App extends Component {
   }
 
   fetchData(filter){
-    fetchTodos(filter).then((todos) => {
-      console.log(todos);
-      this.props.receiveTodos(filter, todos);
-    });
+    this.props.fetchTodos(filter);
   }
 
   render(){

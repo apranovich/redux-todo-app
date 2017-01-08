@@ -1,3 +1,5 @@
+import * as api from '../api'
+
 const addNewTodo = (id, text) => ({
   type: 'ADD_NEW_TODO',
   payload: { id, text }
@@ -13,6 +15,11 @@ const receiveTodos = (filter, data) => ({
   payload: { filter, data }
 })
 
+const fetchTodos = (filter) =>
+  api.fetchTodos(filter).then(response =>
+    receiveTodos(filter, response)
+  );
+
 const editTodo = (id, text) => ({
   type: 'EDIT_TODO',
   payload: { id, text }
@@ -24,5 +31,5 @@ const removeTodo = (id) => ({
 })
 
 export {
-  addNewTodo, toggleTodo, receiveTodos, editTodo, removeTodo
+  addNewTodo, toggleTodo, fetchTodos, editTodo, removeTodo
 }
